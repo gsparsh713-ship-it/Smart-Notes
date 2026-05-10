@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-sticky-note logo-icon"></i>
+            <span class="logo-text">Smart Notes</span>
+        </div>
+        <nav class="nav-links">
+            <button class="btn-theme" id="themeBtn" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="btn-new-note">
+                <i class="fas fa-plus"></i>
+                <span>New Note</span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container">
+        <section class="hero">
+            <h1>Your Notes</h1>
+            <p class="subtitle">Capture thoughts, organize ideas, stay productive.</p>
+        </section>
+
+        <!-- Search & Filters -->
+        <section class="controls">
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search notes...">
+            </div>
+            <div class="filters">
+                <button class="pill active" data-category="All">All Notes</button>
+                <button class="pill" data-category="Personal">Personal</button>
+                <button class="pill" data-category="Work">Work</button>
+                <button class="pill" data-category="Ideas">Ideas</button>
+                <button class="pill" data-category="Tasks">Tasks</button>
+                <button class="pill" data-category="Other">Other</button>
+            </div>
+        </section>
+
+        <!-- Notes Grid -->
+        <section class="notes-grid" id="notesGrid">
+            <!-- Notes will be dynamically inserted here -->
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No notes yet. Create your first note!</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add/Edit Note Modal -->
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Note</h2>
+                <button class="btn-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="noteForm" class="note-form">
+                <div class="form-group">
+                    <label for="noteTitle">Title</label>
+                    <input type="text" id="noteTitle" placeholder="Enter note title..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteCategory">Category</label>
+                    <select id="noteCategory" required>
+                        <option value="Personal">Personal</option>
+                        <option value="Work">Work</option>
+                        <option value="Ideas">Ideas</option>
+                        <option value="Tasks">Tasks</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="noteContent">Content</label>
+                    <textarea id="noteContent" placeholder="Write your note here..." required rows="8"></textarea>
+                </div>
+
+                <div class="form-group color-group">
+                    <label>Select Color</label>
+                    <div class="color-picker">
+                        <input type="radio" name="color" value="#FFE5E5" id="color1">
+                        <label for="color1" style="background: #FFE5E5;" title="Red"></label>
+                        
+                        <input type="radio" name="color" value="#FFF4E5" id="color2" checked>
+                        <label for="color2" style="background: #FFF4E5;" title="Orange"></label>
+                        
+                        <input type="radio" name="color" value="#E5F4FF" id="color3">
+                        <label for="color3" style="background: #E5F4FF;" title="Blue"></label>
+                        
+                        <input type="radio" name="color" value="#E5FFE5" id="color4">
+                        <label for="color4" style="background: #E5FFE5;" title="Green"></label>
+                        
+                        <input type="radio" name="color" value="#F4E5FF" id="color5">
+                        <label for="color5" style="background: #F4E5FF;" title="Purple"></label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        <span>Save Note</span>
+                    </button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i>
+                        <span>Cancel</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg"></span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
