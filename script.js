@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     renderNotes();
     loadTheme();
+    updateSettings();
 });
 
 // ===== LOCAL STORAGE =====
@@ -48,12 +49,12 @@ function updateThemeIcon() {
 
 // ===== EVENT LISTENERS =====
 function setupEventListeners() {
-    // Modal controls
-    document.querySelector('.btn-new-note').addEventListener('click', openCreateModal);
-    document.getElementById('closeModal').addEventListener('click', closeModal);
-    document.getElementById('cancelBtn').addEventListener('click', closeModal);
-    document.getElementById('noteModal').addEventListener('click', (e) => {
-        if (e.target === document.getElementById('noteModal')) closeModal();
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabName = btn.dataset.tab;
+            switchTab(tabName);
+        });
     });
 
     // Form submission
@@ -74,34 +75,39 @@ function setupEventListeners() {
 
     // Theme toggle
     document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+    // Settings
+    document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+    document.getElementById('clearDataBtn').addEventListener('click', clearAllData);
 }
 
-// ===== MODAL MANAGEMENT =====
-function openCreateModal() {
-    currentEditingId = null;
-    document.getElementById('modalTitle').textContent = 'Create New Note';
-    document.getElementById('noteForm').reset();
-    document.getElementById('color2').checked = true;
-    document.getElementById('noteModal').classList.add('active');
+// ===== TAB SWITCHING =====
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById(tabName).classList.add('active');
+
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+    // Render appropriate content
+    if (tabName === 'categories') {
+        renderCategories();
+    } else if (tabName === 'settings') {
+        updateSettings();
+    }
+
+    window.scrollTo(0, 0);
 }
 
-function openEditModal(id) {
-    const note = notes.find(n => n.id === id);
-    if (!note) return;
-
-    currentEditingId = id;
-    document.getElementById('modalTitle').textContent = 'Edit Note';
-    document.getElementById('noteTitle').value = note.title;
-    document.getElementById('noteCategory').value = note.category;
-    document.getElementById('noteContent').value = note.content;
-    document.querySelector(`input[name="color"][value="${note.color}"]`).checked = true;
-    document.getElementById('noteModal').classList.add('active');
-}
-
-function closeModal() {
-    document.getElementById('noteModal').classList.remove('active');
-    currentEditingId = null;
-}
+// ===== NOTE FORM MANAGEMENT =====
 
 // ===== NOTE OPERATIONS =====
 function handleSaveNote(e) {
@@ -145,7 +151,9 @@ function handleSaveNote(e) {
     }
 
     saveNotes();
-    closeModal();
+    document.getElementById('noteForm').reset();
+    document.getElementById('color2').checked = true;
+    switchTab('dashboard');
     renderNotes();
 }
 
@@ -262,44 +270,111 @@ function showToast(message) {
 }
 
 // ===== SAMPLE DATA (Optional) =====
-function addSampleNotes() {
-    if (notes.length === 0) {
-        notes = [
-            {
-                id: 1,
-                title: 'Welcome to Smart Notes',
-                category: 'Personal',
-                content: 'This is your first note! You can:\n- Create new notes\n- Edit existing notes\n- Delete notes\n- Pin important notes\n- Filter by category\n- Search notes\n\nAll notes are saved in your browser!',
-                color: '#FFF4E5',
-                pinned: true,
-                createdAt: new Date(Date.now() - 3600000).toISOString(),
-                updatedAt: new Date(Date.now() - 3600000).toISOString()
-            },
-            {
-                id: 2,
-                title: 'Project Ideas',
-                category: 'Ideas',
-                content: 'Build a smart notes app with:\n✓ Local storage\n✓ Beautiful UI\n✓ Font Awesome icons\n✓ Dark mode\n✓ Responsive design\n✓ Search & filter',
-                color: '#E5F4FF',
-                pinned: false,
-                createdAt: new Date(Date.now() - 7200000).toISOString(),
-                updatedAt: new Date(Date.now() - 7200000).toISOString()
-            },
-            {
-                id: 3,
-                title: 'Meeting Notes',
-                category: 'Work',
-                content: 'Team meeting agenda:\n1. Q1 Review\n2. New feature planning\n3. Resource allocation\n4. Timeline discussion',
-                color: '#E5FFE5',
-                pinned: false,
-                createdAt: new Date(Date.now() - 86400000).toISOString(),
-                updatedAt: new Date(Date.now() - 86400000).toISOString()
-            }
-        ];
-        saveNotes();
-        renderNotes();
-    }
+// function addSampleNotes() {
+//     if (notes.length === 0) {
+//         notes = [
+//             {
+//                 id: 1,
+//                 title: 'Welcome to Smart Notes',
+//                 category: 'Personal',
+//                 content: 'This is your first note! You can:\n- Create new notes\n- Edit existing notes\n- Delete notes\n- Pin important notes\n- Filter by category\n- Search notes\n\nAll notes are saved in your browser!',
+//                 color: '#FFF4E5',
+//                 pinned: true,
+//                 createdAt: new Date(Date.now() - 3600000).toISOString(),
+//                 updatedAt: new Date(Date.now() - 3600000).toISOString()
+//             },
+//             {
+//                 id: 2,
+//                 title: 'Project Ideas',
+//                 category: 'Ideas',
+//                 content: 'Build a smart notes app with:\n✓ Local storage\n✓ Beautiful UI\n✓ Font Awesome icons\n✓ Dark mode\n✓ Responsive design\n✓ Search & filter',
+//                 color: '#E5F4FF',
+//                 pinned: false,
+//                 createdAt: new Date(Date.now() - 7200000).toISOString(),
+//                 updatedAt: new Date(Date.now() - 7200000).toISOString()
+//             },
+//             {
+//                 id: 3,
+//                 title: 'Meeting Notes',
+//                 category: 'Work',
+//                 content: 'Team meeting agenda:\n1. Q1 Review\n2. New feature planning\n3. Resource allocation\n4. Timeline discussion',
+//                 color: '#E5FFE5',
+//                 pinned: false,
+//                 createdAt: new Date(Date.now() - 86400000).toISOString(),
+//                 updatedAt: new Date(Date.now() - 86400000).toISOString()
+//             }
+//         ];
+//         saveNotes();
+//         renderNotes();
+//     }
+// }
+
+// ===== CATEGORIES RENDERING =====
+function renderCategories() {
+    const categories = [
+        { name: 'Personal', icon: 'fa-user', color: '#FFE5E5' },
+        { name: 'Work', icon: 'fa-briefcase', color: '#FFF4E5' },
+        { name: 'Ideas', icon: 'fa-lightbulb', color: '#E5F4FF' },
+        { name: 'Tasks', icon: 'fa-tasks', color: '#E5FFE5' },
+        { name: 'Other', icon: 'fa-folder', color: '#F4E5FF' }
+    ];
+
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    
+    categoriesGrid.innerHTML = categories.map(cat => {
+        const count = notes.filter(n => n.category === cat.name).length;
+        return `
+            <div class="category-card" onclick="switchTab('dashboard'); filterByCategory('${cat.name}');">
+                <i class="fas ${cat.icon}"></i>
+                <h3>${cat.name}</h3>
+                <div class="category-count">${count}</div>
+                <div class="category-label">${count === 1 ? '1 note' : count + ' notes'}</div>
+            </div>
+        `;
+    }).join('');
 }
 
-// Uncomment to load sample notes on first visit:
-// addSampleNotes();
+function filterByCategory(category) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    currentCategory = category;
+    renderNotes();
+}
+
+// ===== SETTINGS & DARK MODE =====
+function updateSettings() {
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    
+    if (isDarkMode) {
+        darkModeToggle.classList.add('active');
+    } else {
+        darkModeToggle.classList.remove('active');
+    }
+
+    // Update storage info
+    const totalNotes = notes.length;
+    const storageData = JSON.stringify(localStorage.getItem(STORAGE_KEY));
+    const storageSizeKB = (storageData.length / 1024).toFixed(2);
+
+    document.getElementById('totalNotesDisplay').textContent = `${totalNotes} ${totalNotes === 1 ? 'note' : 'notes'} stored`;
+    document.getElementById('storageDisplay').textContent = `${storageSizeKB} KB / 10 MB`;
+}
+
+function toggleDarkMode() {
+    toggleTheme();
+    updateSettings();
+}
+
+function clearAllData() {
+    if (confirm('Are you sure you want to delete ALL notes? This action cannot be undone!')) {
+        if (confirm('This will permanently delete all your notes. Are you really sure?')) {
+            notes = [];
+            saveNotes();
+            renderNotes();
+            switchTab('dashboard');
+            showToast('All notes cleared!');
+            updateSettings();
+        }
+    }
+}
