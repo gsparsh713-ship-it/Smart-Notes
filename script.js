@@ -111,8 +111,8 @@ function switchTab(tabName) {
 
 // ===== NOTE OPERATIONS =====
 function handleSaveNote(e) {
-    e.preventDefault();
-
+    e.preventDefault();  //e is event object 
+   // above Normally forms reload the page after submit.This stops that behavior.
     const title = document.getElementById('noteTitle').value.trim();
     const category = document.getElementById('noteCategory').value;
     const content = document.getElementById('noteContent').value.trim();
