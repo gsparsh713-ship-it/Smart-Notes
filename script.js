@@ -108,6 +108,19 @@ function switchTab(tabName) {
 }
 
 // ===== NOTE FORM MANAGEMENT =====
+function editNote(id) {
+    const note = notes.find(n => n.id === id);
+    if (!note) return;
+
+    currentEditingId = id;
+    document.getElementById('noteTitle').value = note.title;
+    document.getElementById('noteCategory').value = note.category;
+    document.getElementById('noteContent').value = note.content;
+    document.querySelector(`input[name="color"][value="${note.color}"]`).checked = true;
+    
+    switchTab('create');
+    document.getElementById('noteTitle').focus();
+}
 
 // ===== NOTE OPERATIONS =====
 function handleSaveNote(e) {
@@ -218,7 +231,7 @@ function renderNotes() {
                             title="${note.pinned ? 'Unpin' : 'Pin'}">
                         <i class="fas fa-thumbtack"></i>
                     </button>
-                    <button onclick="openEditModal(${note.id}); event.stopPropagation();" title="Edit">
+                    <button onclick="editNote(${note.id}); event.stopPropagation();" title="Edit">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button onclick="deleteNote(${note.id}); event.stopPropagation();" title="Delete">
