@@ -137,14 +137,14 @@ function handleSaveNote(e) {
     } else {
         // Create new note
         const newNote = {
-            id: Date.now(),
+            id: Date.now(),  //creates a unique id based on current timestamp
             title,
             category,
             content,
             color,
             pinned: false,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),  //shows the current date and time
+            updatedAt: new Date().toISOString()  //initially same as createdAt, will update when edited
         };
         notes.unshift(newNote);
         showToast('Note created successfully!');
@@ -153,12 +153,12 @@ function handleSaveNote(e) {
     saveNotes();
     document.getElementById('noteForm').reset();
     document.getElementById('color2').checked = true;
-    switchTab('dashboard');
+    switchTab('dashboard');  // After saving, switch back to dashboard to show the new/updated note
     renderNotes();
 }
 
 function deleteNote(id) {
-    event.stopPropagation();
+    event.stopPropagation(); // Prevents the click event from bubbling up to the note card, which would trigger the edit modal
     if (confirm('Are you sure you want to delete this note?')) {
         notes = notes.filter(n => n.id !== id);
         saveNotes();
@@ -240,7 +240,7 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
+} // Convert special HTML characters into normal text.
 
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -332,7 +332,7 @@ function renderCategories() {
             </div>
         `;
     }).join('');
-}
+} // This function creates and shows category cards like: Personal Work Ideas Tasks Other and also shows how many notes each category has.
 
 function filterByCategory(category) {
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
