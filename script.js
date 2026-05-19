@@ -19,10 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 function loadNotes() {
     const stored = localStorage.getItem(STORAGE_KEY);
     notes = stored ? JSON.parse(stored) : [];
+    console.log('Loaded notes:', notes.length, notes);
 }
 
 function saveNotes() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    console.log('Saved notes:', notes.length, notes);
 }
 
 // ===== THEME MANAGEMENT =====
@@ -193,6 +195,7 @@ function togglePin(id) {
 
 // ===== RENDERING =====
 function renderNotes() {
+    console.log('Rendering notes. Total notes:', notes.length);
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     
     // Filter notes
